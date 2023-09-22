@@ -12,29 +12,32 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 
 @WebServlet(name = "productController", urlPatterns = "/product")
 public class ProductController extends HttpServlet {
     private ProductService productService;
     private CategoryService categoryService;
+
     @Override
     public void init() throws ServletException {
         productService = new ProductService();
         categoryService = new CategoryService();
 
     }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = req.getParameter("action");
-        if(action == null){
+        if (action == null) {
             action = "";
         }
-        switch (action){
+        switch (action) {
             case "create":
-                showCreate(req,resp);
+                showCreate(req, resp);
                 break;
             default:
-                showList(req,resp);
+                showList(req, resp);
         }
     }
 
@@ -43,36 +46,51 @@ public class ProductController extends HttpServlet {
     }
 
     private void showList(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setAttribute("products", productService.getProducts());
+        String pageString = req.getParameter("page");
+        if (pageString == null) {
+            pageString = "1";
+        }
+        req.setAttribute("page", productService.getProducts(Integer.parseInt(pageString)));
         req.setAttribute("message", req.getParameter("message"));
         req.getRequestDispatcher("product/index.jsp").forward(req, resp);
     }
 
     private void showCreate(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setAttribute("categories", categoryService.getCategories());
-        req.getRequestDispatcher("product/create.jsp").forward(req,resp);
+        req.getRequestDispatcher("product/create.jsp").forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = req.getParameter("action");
-        if(action == null){
+        if (action == null) {
             action = "";
         }
-        switch (action){
-            case "create":
-                create(req,resp);
-                break;
+        try {
+            if (action.equals("create")) {
+                create(req, resp);
+            }
+            if (action.equals("edit")) {
+                edit(req, resp);
+            }
+        } catch (
+                SQLException e) {
+            throw new RuntimeException(e);
         }
+
+}
+
+    private void edit(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
+        String pageString = req.getParameter("page");
+        if (pageString == null) {
+            pageString = "1";
+        }
+        productService.update(req, Integer.parseInt(pageString));
+        resp.sendRedirect("/product?message=Updated");
     }
 
-    private void create(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String name = req.getParameter("name");
-        BigDecimal price = new BigDecimal(req.getParameter("price"));
-        String description = req.getParameter("description");
-        String idCategory = req.getParameter("category");
-        Category category = categoryService.getCategory(Integer.parseInt(idCategory));
-        productService.create(new Product(name, price,description,category));
+    private void create(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
+        productService.create(req);
         resp.sendRedirect("/product?message=Created");
     }
 

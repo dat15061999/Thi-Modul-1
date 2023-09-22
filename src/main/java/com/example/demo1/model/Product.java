@@ -2,23 +2,26 @@ package com.example.demo1.model;
 
 import java.math.BigDecimal;
 
-public class Product {
+public class Product implements Comparable<Product>{
     //
     private int id;
 
     private String name;
 
-    private BigDecimal price;
+    private int price;
 
     private String description;
 
     private Category category;
 
-    public Product( String name, BigDecimal price, String description, Category category) {
+    public Product( String name, int price, String description, Category category) {
         this.name = name;
         this.price = price;
         this.description = description;
         this.category = category;
+    }
+
+    public Product() {
     }
 
     public int getId() {
@@ -37,11 +40,11 @@ public class Product {
         this.name = name;
     }
 
-    public BigDecimal getPrice() {
+    public int getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 
@@ -59,5 +62,9 @@ public class Product {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+    @Override
+    public int compareTo(Product product) {
+        return Integer.compare(this.id, product.getId());
     }
 }

@@ -26,12 +26,14 @@
             border: 2px solid #000;
             background-color: #FFF;
         }
-        td{
+
+        td {
             width: 55px;
             padding: 10px;
             vertical-align: middle;
             text-align: center;
         }
+
         /*.col-1{*/
         /*    flex: 0 0 auto;*/
         /*    width: 100px;*/
@@ -47,13 +49,14 @@
         <c:if test="${message != null}">
             <h6 class="d-none" id="message">${message}</h6>
         </c:if>
-        <div class="row" >
+        <div class="row">
             <a href="/book" class="btn btn-primary mb-2 col-1">Home</a>
             <a href="/book?action=create" class="btn btn-primary mb-2 col-1">Create</a>
             <a href="/book?action=showRestore" class="btn btn-primary mb-2 col-1">Restore</a>
             <p class="col-2"></p>
             <form action="/book?action=search" method="post" class="col-5 justify-content-center d-flex">
-                <input type="search" class="form-control" name="search" placeholder="Search" id="searchInput" onkeyup="searchStudents()">
+                <input type="search" class="form-control" name="search" placeholder="Search" id="searchInput"
+                       onkeyup="searchStudents()">
                 <button type="submit" class="btn btn-primary" style="text-align: right" name="">Search</button>
             </form>
             <p class="col-1"></p>
@@ -103,7 +106,7 @@
                             ${book.title}
                     </td>
                     <td>
-                        <fmt:formatNumber value="${book.price}" pattern="###,### đ" />
+                        <fmt:formatNumber value="${book.price}" pattern="###,### đ"/>
                     </td>
                     <td>
                             ${book.description}
@@ -118,8 +121,8 @@
                             ${book.getAuthors()}
                     </td>
                     <td>
-                       <input type="checkbox" name="box" style="text-align: center" id="myCheckbox-${book.id}"
-                              class="productCheckbox" data-product-id="${book.id}">
+                        <input type="checkbox" name="box" style="text-align: center" id="myCheckbox-${book.id}"
+                               class="productCheckbox" data-product-id="${book.id}">
                     </td>
                     <td>
                         <a class="btn btn-danger" data-bs-toggle="modal"
@@ -177,17 +180,21 @@
                                                value="${book.publishDate}">
                                     </div>
                                     <div class="mb-3">
-                                        <label class="form-label">Authors</label>
+                                        <label class="form-label">Author</label>
                                         <c:forEach var="author" items="${authors}">
-                                            <c:set var="isChecked" value="false" scope="page" />
-                                            <c:forEach var="bookAuthor" items="${book.bookAuthors}">
-                                                <c:if test="${bookAuthor.id == author.id}">
-                                                    <c:set var="isChecked" value="true" />
-                                                </c:if>
-                                            </c:forEach>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input checkbox" name="author" type="checkbox" id="inlineCheckbox${author.id}" value="${author.id}" <c:if test="${isChecked}">checked</c:if>>
-                                                <label class="form-check-label" for="inlineCheckbox${author.id}">${author.name}</label>
+                                            <div class="form-check">
+                                                <c:set var="checkAuthor" value="0"/>
+                                                <c:forEach var="bookAuthor" items="${book.getBookAuthors()}">
+                                                    <c:if test="${bookAuthor.author.id == author.id}">
+                                                        <c:set var="checkAuthor" value="1"/>
+                                                    </c:if>
+                                                </c:forEach>
+                                                <input type="checkbox" class="form-check-input" name="author"
+                                                       value="${author.id}" id="author-${author.id}"
+                                                       <c:if test="${checkAuthor == '1'}">checked</c:if>
+                                                >
+                                                <label class="form-check-label"
+                                                       for="author-${author.id}">${author.name}</label>
                                             </div>
                                         </c:forEach>
                                     </div>
@@ -240,6 +247,7 @@
             }
         }
     });
+
     function toggleCheckboxes() {
         var checkboxes = document.querySelectorAll('.productCheckbox');
 
@@ -251,6 +259,7 @@
         // Cập nhật trạng thái isChecked
         isChecked = !isChecked;
     }
+
     function searchStudents() {
         var input, filter, table, tr, td, i, txtValue;
         input = document.getElementById("searchInput");
