@@ -20,7 +20,6 @@ public class Book {
     private Category category;
 
     private List<BookAuthor> bookAuthors;
-    private boolean delete = false;
 
     public Book(int id, String title, String description, BigDecimal price, Date publishDate, Category category, List<BookAuthor> bookAuthors) {
         this.id = id;
@@ -33,14 +32,6 @@ public class Book {
     }
 
     public Book() {
-    }
-
-    public boolean isDelete() {
-        return delete;
-    }
-
-    public void setDelete(boolean delete) {
-        this.delete = delete;
     }
 
     public int getId() {
@@ -99,9 +90,9 @@ public class Book {
         this.bookAuthors = bookAuthors;
     }
 
-    public String getAuthors() {
+    public String getAuthors(){
+        //[3,2] -> "3, 2"
         return bookAuthors.stream()
                 .map(e -> e.getAuthor().getName()).collect(Collectors.joining(", "));
     }
-
 }

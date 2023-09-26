@@ -16,30 +16,43 @@
 <body>
 <div class="container">
     <div class="card container px-6" style="height: 100vh">
-        <h3 class="text-center">Create Product</h3>
+
+        <c:if test="${product.id == 0}">
+            <h3 class="text-center">Create Product</h3>
         <form action="/product?action=create" method="post">
-            <div class="mb-3">
-                <label for="name" class="form-label">Name</label>
-                <input type="text" class="form-control" id="name" name="name">
-            </div>
-            <div class="mb-3">
-                <label for="price" class="form-label">Price</label>
-                <input type="number" class="form-control" name="price" id="price">
-            </div>
-            <div class="mb-3">
-                <label for="description" class="form-label">Description</label>
-                <input type="text" class="form-control" name="description" id="description">
-            </div>
-            <div class="mb-3">
-                <label for="category" class="form-label">Category</label>
-                <select class="form-control" name="category" id="category">
-                    <c:forEach var="category" items="${categories}">
-                        <option value="${category.id}">${category.name}</option>
-                    </c:forEach>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+            </c:if>
+            <c:if test="${product.id != 0}">
+                <h3 class="text-center">Edit Product</h3>
+            <form action="/product?action=edit&id=${product.id}" method="post">
+                </c:if>
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="name" name="name" value="${product.name}">
+                </div>
+                <div class="mb-3">
+                    <label for="price" class="form-label">Price</label>
+                    <input type="number" class="form-control" name="price" id="price" value="${product.price}">
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <input type="text" class="form-control" name="description" id="description"
+                           value="${product.description}">
+                </div>
+                <div class="mb-3">
+                    <label for="category" class="form-label">Category</label>
+                    <select class="form-control" name="category" id="category">
+                        <c:forEach var="category" items="${categories}">
+                            <option value="${category.id}"
+                                    <c:if test="${category.id == product.category.id}">
+                                        selected
+                                    </c:if>
+                            >${category.name}
+                            </option>
+                        </c:forEach>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
     </div>
 
 </div>

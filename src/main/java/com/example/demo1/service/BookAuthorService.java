@@ -13,9 +13,7 @@ public class BookAuthorService {
     static {
         bookAuthors = new ArrayList<>();
     }
-    public List<BookAuthor> getBookAuthors(){
-        return bookAuthors;
-    }
+
     public BookAuthor create(BookAuthor bookAuthor){
         bookAuthor.setId(++idCurrent);
         bookAuthors.add(bookAuthor);
